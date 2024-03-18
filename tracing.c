@@ -69,6 +69,9 @@ void trace_init()
 
     const char* filename = getenv("TRACE_FILE_NAME");
     if (filename == NULL) {
+        if (getenv("TRACE_ENABLE") == NULL) {
+            return;
+        }
         unsigned random = 0;
         int len = getrandom(&random, sizeof(random), 0);
         if (len != sizeof(random)) {
