@@ -104,7 +104,7 @@ void trace_close()
     tracing_file = NULL;
 }
 
-static void trace_metadata(const char* event_name, const char* argument, const char* value)
+static void write_metadata_event(const char* event_name, const char* argument, const char* value)
 {
     char buffer[256];
     int len = snprintf(buffer, 256, ", \"args\": {\"%s\": \"%s\"}", argument, value);
@@ -120,7 +120,7 @@ void trace_set_process_name(const char *name)
     if (!tracing_file) {
         return;
     }
-    trace_metadata("process_name", "name", name);
+    write_metadata_event("process_name", "name", name);
 }
 
 void trace_set_thread_name(const char *name)
@@ -128,5 +128,5 @@ void trace_set_thread_name(const char *name)
     if (!tracing_file) {
         return;
     }
-    trace_metadata("thread_name", "name", name);
+    write_metadata_event("thread_name", "name", name);
 }
