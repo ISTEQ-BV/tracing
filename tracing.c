@@ -40,21 +40,8 @@ static int get_tid()
 
 static void write_event(const char *name, const char *cat, char ph, long ts, const char *extra)
 {
-    // char buffer[256];
-    // int len = snprintf(buffer, 256, "{\"name\": \"%s\", \"cat\": \"%s\", \"ph\": \"%c\", \"pid\": %d, \"tid\": %d, \"ts\": %ld%s},\n",
-    //         name, cat, ph, tracing_pid, get_tid(), ts, extra);
-    // if (len >= 256) {
-    //     // message too long, just skip
-    //     return;
-    // }
-    // flockfile(tracing_file);
-    // fwrite_unlocked(buffer, 1, len, tracing_file);
-    // fflush_unlocked(tracing_file);
-    // funlockfile(tracing_file);
-
     fprintf(tracing_file, "{\"name\": \"%s\", \"cat\": \"%s\", \"ph\": \"%c\", \"pid\": %d, \"tid\": %d, \"ts\": %ld%s},\n",
             name, cat, ph, tracing_pid, get_tid(), ts, extra);
-    fflush(tracing_file);
 }
 
 void trace_begin(const char *name)
@@ -100,6 +87,8 @@ void trace_init()
         fprintf(stderr, "Warning: tracing is disabled\n");
         return;
     }
+    // disable buffering
+    setvbuf(tracing_file, NULL, _IONBF, 0);
 
     fprintf(tracing_file, "[\n");
     atexit(trace_close);
