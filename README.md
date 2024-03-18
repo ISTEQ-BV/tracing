@@ -63,7 +63,7 @@ Initialize the tracing library.
 
 This must be called before other calls to the library and before creating the threads.
 Opens the trace json file (either specified in the `TRACE_FILE_NAME` environment
-variavble, or, if that is not set, with format `trace-<pid>-<random>.json`).
+variable, or, if that is not set, with format `trace-<pid>-<random>.json`).
 It also registers `trace_close()` to be called at exit (with `atexit()`).
 
     void trace_close();
@@ -104,14 +104,21 @@ Environment variables
 
     TRACE_FILE_NAME
     
-Specify trace file name. If not specified, filename is 
+Specify trace file name. If not specified, but 
+
+    TRACE_ENABLE
+    
+is set instead, the filename is generated automatically in the form
+
+    trace-<pid>-<random>.json
 
 Performance
 -----------
 
-- To preserve maximum information in a crash, the library writes events imeediately to the file. (It calls `fflush` after every event).
-This also alolows watching the trace file while the program still runs.
-- Writing to the file is syncronized.
+- To preserve maximum information in a crash, the library writes events immediately to the file.
+This also allows watching the trace file while the program still runs.
+- Writing to the file is synchronised by virtue of using C functions, such as `fprintf`.
+- The library makes two syscalls for every event: one `clock_gettime` and one `write`.
 
 Therefore:
 - Do not use this library in the inner loops. 
@@ -124,17 +131,17 @@ Overhead of an empty scope is ~ 8 us.
 
 Benchmark system: Ubuntu 23.10, GCC 13.2, AMD Ryzen 5700G
 
-Viewing the trace
------------------
+Viewing traces
+--------------
 
-Chrome Trsce Event format was chosen as one of the most widely supported trace formats.
+Chrome Trace Event format was chosen as one of the most widely supported trace formats.
 
 To view the file, options are:
 
-- QtCreator To open use menu item "Analyze" -> "Chrome Trace Format Viewer" -> "Load JSON file".
+- **QtCreator** To open use menu item "Analyze" -> "Chrome Trace Format Viewer" -> "Load JSON file".
   Does not show event names by default, use a toolbar button to enable showing information on hover without a click.
-- [Speedscope](https://www.speedscope.app/) The most friendly visualization, but only shows one thread at a time.
-- [Perfetto](https://ui.perfetto.dev/)
+- **[Speedscope](https://www.speedscope.app/)** The most friendly visualization, but only shows one thread at a time.
+- **[Perfetto](https://ui.perfetto.dev/)**
 
 Viewers that do not work:
 - [Firefox profiler](https://profiler.firefox.com/) - cannot load generic Trace Event file. 
@@ -145,7 +152,7 @@ Note: Some viewers can have issues with traces longer than ~30 min, seemingly du
 Compatibility and requirements
 ------------------------------
 
-Scoped macros require a GCC or Clang compiler (`__attribute__((cleanup))`)
+Scoped macros require a GCC or Clang compiler for `__attribute__((cleanup))`
 
 The library uses non-standard calls `gettid()` and `getrandom()`
 and therefore is Linux-only.
