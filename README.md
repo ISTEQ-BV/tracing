@@ -57,6 +57,23 @@ int main()
 API
 ---
 
+Synopsys:
+
+    void trace_init();
+    void trace_close();
+
+    void trace_set_process_name(const char* name);
+    void trace_set_thread_name(const char* name);
+
+    void trace_begin(const char* name);
+    void trace_end(const char* name);
+
+    // Macros:
+    TRACE_SCOPE()
+    TRACE_FUNC()
+
+Description:
+
     void trace_init();
    
 Initialize the tracing library. 
@@ -126,7 +143,7 @@ Only use it to trace some larger sections of the code.
 - Be especially careful when using it from many threads.
 
 Overhead was measured using the example program above.
-Overhead on one event all is approximately 4 us (microseconds).
+Overhead on one event call is approximately 4 us (microseconds).
 Overhead of an empty scope is ~ 8 us.
 
 Benchmark system: Ubuntu 23.10, GCC 13.2, AMD Ryzen 5700G

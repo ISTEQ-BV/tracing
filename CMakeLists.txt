@@ -6,6 +6,7 @@ add_compile_options(-Wall -Wextra)
 add_library(tracing
     tracing.h
     tracing.c
+    README.md
 )
 target_include_directories(tracing PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_compile_features(tracing PUBLIC c_std_99)
