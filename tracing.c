@@ -72,9 +72,9 @@ void trace_init()
 
     char buffer[64];
 
-    const char* filename = getenv("TRACE_FILE_NAME");
+    const char* filename = getenv("TRACING_FILE_NAME");
     if (filename == NULL) {
-        if (getenv("TRACE_ENABLE") == NULL) {
+        if (getenv("TRACING_ENABLE") == NULL) {
             return;
         }
         unsigned random = 0;

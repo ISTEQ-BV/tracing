@@ -119,11 +119,13 @@ The same as above but uses current function name as scope name (using `__func__`
 Environment variables
 ---------------------
 
-    TRACE_FILE_NAME
+    TRACING_FILE_NAME
     
-Specify trace file name. If not specified, but 
+Specify trace file name (this also enables tracing). 
 
-    TRACE_ENABLE
+If file name is not specified, but 
+
+    TRACING_ENABLE
     
 is set instead, the filename is generated automatically in the form
 
