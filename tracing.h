@@ -25,7 +25,7 @@ inline void trace_scope_end(const char** pname)
 
 #define TRACE_SCOPE(name) \
 __attribute__((cleanup(trace_scope_end))) const char* trace_scope_name = (name); \
-trace_begin(trace_scope_name)
+trace_begin(trace_scope_name);
 
 #define TRACE_FUNC() TRACE_SCOPE(__func__)
 

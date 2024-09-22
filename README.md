@@ -54,6 +54,29 @@ int main()
 }
 ```
 
+Building
+--------
+
+    cmake -B build -DCMAKE_BUILD_TYPE=Release
+    cmake --build build
+
+To run the example:
+
+    TRACING_ENABLE=TRUE ./build/test_tracing_threads
+
+Including into your project
+---------------------------
+
+Option one: use cmake `add_subdirectory` assuming you have downloaded tracing source code into 
+`external/tracing`:
+
+    add_subdirectory(external/tracing)
+
+    add_executable(my_executable)
+    target_link_library(my_executable PRIVATE tracing)
+
+Option two: just add files `tracing.c` and `tracing.h` to your build using any build system.
+
 API
 ---
 
@@ -137,7 +160,10 @@ Performance
 - To preserve maximum information in a crash, the library writes events immediately to the file.
 This also allows watching the trace file while the program still runs.
 - Writing to the file is synchronised by virtue of using C functions, such as `fprintf`.
-- The library makes two syscalls for every event: one `clock_gettime` and one `write`.
+- On recent `linux` and `glibc`, the library makes one or two syscalls per every event:
+    - possibly one `futex` call if tracing from multiple threads with contention
+    - and always one `write` call
+- On older systems, it may also make a `clock_gettime` syscall per event.
 
 Therefore:
 - Do not use this library in the inner loops. 
@@ -145,10 +171,9 @@ Only use it to trace some larger sections of the code.
 - Be especially careful when using it from many threads.
 
 Overhead was measured using the example program above.
-Overhead on one event call is approximately 4 us (microseconds).
-Overhead of an empty scope is ~ 8 us.
+Overhead of an empty scope (two events) is ~ 5 us.
 
-Benchmark system: Ubuntu 23.10, GCC 13.2, AMD Ryzen 5700G
+Benchmark system: Ubuntu 24.04, Linux 6.8.0-44, GCC 13.2.0, AMD Ryzen 5700G
 
 Viewing traces
 --------------
