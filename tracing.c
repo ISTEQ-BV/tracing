@@ -43,6 +43,11 @@ static void write_event(const char *name, const char *cat, char ph, long ts, con
     fprintf(tracing_file, "{\"name\": \"%s\", \"cat\": \"%s\", \"ph\": \"%c\", \"pid\": %d, \"tid\": %d, \"ts\": %ld%s},\n",
             name, cat, ph, tracing_pid, get_tid(), ts, extra);
 }
+static void write_event_no_comma(const char *name, const char *cat, char ph, long ts, const char *extra)
+{
+    fprintf(tracing_file, "{\"name\": \"%s\", \"cat\": \"%s\", \"ph\": \"%c\", \"pid\": %d, \"tid\": %d, \"ts\": %ld%s}\n",
+            name, cat, ph, tracing_pid, get_tid(), ts, extra);
+}
 
 void trace_begin(const char *name)
 {
@@ -94,6 +99,7 @@ void trace_init()
     setvbuf(tracing_file, NULL, _IONBF, 0);
 
     fprintf(tracing_file, "[\n");
+    write_event("tracing", "", 'B', time_us() - tracing_started_us, "");
     atexit(trace_close);
 }
 
@@ -102,6 +108,7 @@ void trace_close()
     if (!tracing_file) {
         return;
     }
+    write_event_no_comma("tracing", "", 'E', time_us() - tracing_started_us, "");
     fprintf(tracing_file, "]\n");
     fclose(tracing_file);
     tracing_file = NULL;
