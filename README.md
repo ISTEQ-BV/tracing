@@ -80,7 +80,7 @@ Option two: just add files `tracing.c` and `tracing.h` to your build using any b
 API
 ---
 
-Synopsys:
+Synopsis:
 
     void trace_init();
     void trace_close();
@@ -200,6 +200,11 @@ Scoped macros require a GCC or Clang compiler for `__attribute__((cleanup))`
 
 The library uses non-standard calls `gettid()` and `getrandom()`
 and therefore is Linux-only.
+
+Alternatives
+------------
+
+The closest alternative is https://github.com/google/chrometracing (includes C++ and Go, plus unreleased Python implementation)
 
 License
 -------
